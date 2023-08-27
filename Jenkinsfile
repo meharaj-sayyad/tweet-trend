@@ -1,5 +1,6 @@
 def registry = 'https://mhs.jfrog.io/'
 def imageName = 'mhs.jfrog.io/mhs-docker-local/ttrend'
+def version   = '2.1.2'
 pipeline {
     agent {
         node {
