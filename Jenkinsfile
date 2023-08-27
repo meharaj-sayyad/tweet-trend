@@ -1,4 +1,5 @@
 def registry = 'https://mhs.jfrog.io/'
+def imageName = 'mhs.jfrog.io/mhs-docker-local/ttrend'
 pipeline {
     agent {
         node {
@@ -69,7 +70,28 @@ pipeline {
                     server.publishBuildInfo(buildInfo)
                     echo '<--------------- Jar Publish Ended --------------->'
                 }
-            }   
+            }
+           
+        }
+        stage("Docker Build") {
+            steps {
+                script {
+                    echo '<--------------- Docker Build Started --------------->'
+                    def app = docker.build(imageName + ":" + version)
+                    echo '<--------------- Docker Build Ends --------------->'
+                }
+            }
+        }
+        stage("Docker Publish") {
+            steps {
+                script {
+                    echo '<--------------- Docker Publish Started --------------->'  
+                    docker.withRegistry(registry, 'artifact-cred') {
+                        app.push()
+                    }    
+                    echo '<--------------- Docker Publish Ended --------------->'  
+                }
+            }
         }
     }
 }
